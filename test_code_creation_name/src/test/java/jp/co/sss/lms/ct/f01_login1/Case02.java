@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f01_login1;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+
+import jp.co.sss.lms.ct.util.WebDriverUtils;
 
 /**
  * 結合テスト ログイン機能①
@@ -36,6 +41,10 @@ public class Case02 {
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
 		// TODO ここに追加
+		goTo("http://localhost:8080/lms/");
+		visibilityTimeout(By.id("loginId"), 5);
+		assertEquals("ログイン | LMS", webDriver.getTitle(), "ログイン | LMS");
+
 	}
 
 	@Test
@@ -43,6 +52,27 @@ public class Case02 {
 	@DisplayName("テスト02 DBに登録されていないユーザーでログイン")
 	void test02() {
 		// TODO ここに追加
-	}
 
+		//異常ユーザー
+		//クリア
+		webDriver.findElement(By.id("loginId")).clear();
+		webDriver.findElement(By.id("password")).clear();
+
+		webDriver.findElement(By.id("loginId")).sendKeys("Unknown");
+		webDriver.findElement(By.id("password")).sendKeys("aaaa");
+
+		//ログインボタン押下
+		webDriver.findElement(By.id("password")).sendKeys(Keys.ENTER);
+
+		//エラーメッセージ確認
+		visibilityTimeout(By.cssSelector(".help-inline.error"), 5);
+		String errorMessage = webDriver.findElement(By.cssSelector(".help-inline.error")).getText();
+
+		//チェック
+		assertEquals("* ログインに失敗しました。", errorMessage);
+		//エビデンス取得
+		WebDriverUtils.getEvidence(new Object() {
+		});
+
+	}
 }

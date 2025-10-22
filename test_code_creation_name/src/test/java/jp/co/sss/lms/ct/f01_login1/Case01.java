@@ -9,6 +9,9 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
+
+import jp.co.sss.lms.ct.util.WebDriverUtils;
 
 /**
  * 結合テスト ログイン機能①
@@ -36,6 +39,18 @@ public class Case01 {
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
 		// TODO ここに追加
+		//画面遷移
+		WebDriverUtils.goTo("http://localhost:8080/lms/");
+
+		//ログインID入力欄が表示されていること
+		WebDriverUtils.visibilityTimeout(By.id("loginId"), 5);
+
+		//画面エビデンス取得
+		WebDriverUtils.getEvidence(new Object() {
+		});
+
+		//正常遷移確認
+		assert webDriver.getCurrentUrl().contains("/lms/");
 	}
 
 }
