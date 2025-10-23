@@ -44,6 +44,8 @@ public class Case02 {
 		goTo("http://localhost:8080/lms/");
 		visibilityTimeout(By.id("loginId"), 5);
 		assertEquals("http://localhost:8080/lms/", webDriver.getCurrentUrl());
+		WebDriverUtils.getEvidence(new Object() {
+		});
 
 	}
 
@@ -60,6 +62,9 @@ public class Case02 {
 
 		webDriver.findElement(By.id("loginId")).sendKeys("Unknown");
 		webDriver.findElement(By.id("password")).sendKeys("aaaa");
+		//エビデンス取得
+		WebDriverUtils.getEvidence(new Object() {
+		});
 
 		//ログインボタン押下
 		webDriver.findElement(By.id("password")).sendKeys(Keys.ENTER);
@@ -71,7 +76,7 @@ public class Case02 {
 		//チェック
 		assertEquals("* ログインに失敗しました。", errorMessage);
 		assertTrue(webDriver.getCurrentUrl().contains("lms/login"));
-		//エビデンス取得
+
 		WebDriverUtils.getEvidence(new Object() {
 		});
 
