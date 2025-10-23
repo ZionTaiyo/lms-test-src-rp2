@@ -43,7 +43,7 @@ public class Case02 {
 		// TODO ここに追加
 		goTo("http://localhost:8080/lms/");
 		visibilityTimeout(By.id("loginId"), 5);
-		assertEquals("ログイン | LMS", webDriver.getTitle(), "ログイン | LMS");
+		assertEquals("http://localhost:8080/lms/", webDriver.getCurrentUrl());
 
 	}
 
@@ -70,6 +70,7 @@ public class Case02 {
 
 		//チェック
 		assertEquals("* ログインに失敗しました。", errorMessage);
+		assertTrue(webDriver.getCurrentUrl().contains("lms/login"));
 		//エビデンス取得
 		WebDriverUtils.getEvidence(new Object() {
 		});
