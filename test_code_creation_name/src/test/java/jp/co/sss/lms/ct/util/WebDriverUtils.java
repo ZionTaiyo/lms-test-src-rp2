@@ -32,7 +32,7 @@ public class WebDriverUtils {
 		System.setProperty("webdriver.chrome.driver", "lib/chromedriver.exe");
 		webDriver = new ChromeDriver();
 	}
-	
+
 	/**
 	 * インスタンス終了
 	 */
@@ -48,7 +48,7 @@ public class WebDriverUtils {
 		webDriver.get(url);
 		pageLoadTimeout(5);
 	}
-	
+
 	/**
 	 * ページロードタイムアウト設定
 	 * @param second
@@ -56,7 +56,7 @@ public class WebDriverUtils {
 	public static void pageLoadTimeout(int second) {
 		webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(second));
 	}
-	
+
 	/**
 	 * 要素の可視性タイムアウト設定
 	 * @param locater
@@ -66,7 +66,7 @@ public class WebDriverUtils {
 		WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(second));
 		wait.until(ExpectedConditions.visibilityOfElementLocated(locater));
 	}
-	
+
 	/**
 	 * 指定ピクセル分だけスクロール
 	 * @param pixel
@@ -75,7 +75,6 @@ public class WebDriverUtils {
 		((JavascriptExecutor) webDriver).executeScript("window.scrollBy(0," + pixel + ");");
 	}
 
-	
 	/**
 	 * 指定位置までスクロール
 	 * @param pixel
@@ -113,6 +112,33 @@ public class WebDriverUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 新しいタブへ切り替え
+	 */
+	public static void switchToNewTab() {
+		String originalHandle = webDriver.getWindowHandle();
+
+		WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(5));
+		wait.until(driver -> driver.getWindowHandles().size() > 1);
+
+		for (String handle : webDriver.getWindowHandles()) {
+			if (!handle.equals(originalHandle)) {
+				webDriver.switchTo().window(handle);
+				return;
+			}
+		}
+		throw new IllegalStateException("新しいタブが見つかりませんでした");
+	}
+
+	/**
+	 * 
+	 * @param originalTab 元のタブハンドル
+	 */
+	public static void closeCurrentTabAndReturn(String originalTab) {
+		webDriver.close();
+		webDriver.switchTo().window(originalTab);
 	}
 
 }

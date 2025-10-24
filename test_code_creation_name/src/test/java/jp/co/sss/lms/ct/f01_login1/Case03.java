@@ -1,6 +1,7 @@
 package jp.co.sss.lms.ct.f01_login1;
 
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
+import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +10,11 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+
+import jp.co.sss.lms.ct.util.WebDriverUtils;
 
 /**
  * 結合テスト ログイン機能①
@@ -36,6 +42,13 @@ public class Case03 {
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
 		// TODO ここに追加
+		goTo("http://localhost:8080/lms/");
+		visibilityTimeout(By.id("loginId"), 5);
+		assertEquals("http://localhost:8080/lms/", webDriver.getCurrentUrl());
+		//エビデンス取得
+		WebDriverUtils.getEvidence(new Object() {
+		});
+
 	}
 
 	@Test
@@ -43,6 +56,31 @@ public class Case03 {
 	@DisplayName("テスト02 初回ログイン済みの受講生ユーザーでログイン")
 	void test02() {
 		// TODO ここに追加
+		//ID/PWを取得
+		WebElement loginId = webDriver.findElement(By.id("loginId"));
+		WebElement password = webDriver.findElement(By.id("password"));
+
+		//クリア
+		loginId.clear();
+		password.clear();
+
+		//環境変数からログイン情報を取得
+		String LMS_LOGIN = System.getenv("LMS_LOGIN");
+		String LMS_PASSWORD = System.getenv("LMS_PASSWORD");
+
+		loginId.sendKeys(LMS_LOGIN);
+
+		//パスワード入力とログイン実行
+		password.sendKeys(LMS_PASSWORD, Keys.ENTER);
+
+		//"DEMOコース"表示まで待機
+		visibilityTimeout(By.id("wrap"), 5);
+
+		//正常遷移確認
+		assertEquals("http://localhost:8080/lms/course/detail", webDriver.getCurrentUrl());
+		WebDriverUtils.getEvidence(new Object() {
+		});
+
 	}
 
 }
