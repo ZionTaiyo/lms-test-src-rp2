@@ -1,5 +1,7 @@
 package jp.co.sss.lms.ct.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -9,6 +11,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -141,4 +144,28 @@ public class WebDriverUtils {
 		webDriver.switchTo().window(originalTab);
 	}
 
+	public static void clearText(By locator) {
+		WebElement element = waitVisible(locator);
+		element.clear();
+	}
+
+	public static void clickElement(By locator) {
+		WebElement button = waitClickable(locator);
+		scrollTo("300");
+		button.click();
+	}
+
+	public static void assertVisible(By locator) {
+		assertTrue(waitVisible(locator).isDisplayed());
+	}
+
+	public static WebElement waitVisible(By locator) {
+		WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(5));
+		return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+	}
+
+	public static WebElement waitClickable(By locator) {
+		WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(5));
+		return wait.until(ExpectedConditions.elementToBeClickable(locator));
+	}
 }
