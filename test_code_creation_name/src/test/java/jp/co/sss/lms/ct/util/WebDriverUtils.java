@@ -136,7 +136,7 @@ public class WebDriverUtils {
 	}
 
 	/**
-	 * 
+	 * 元のタブへ帰る
 	 * @param originalTab 元のタブハンドル
 	 */
 	public static void closeCurrentTabAndReturn(String originalTab) {
@@ -144,28 +144,97 @@ public class WebDriverUtils {
 		webDriver.switchTo().window(originalTab);
 	}
 
+	/**
+	 * 入力値クリア
+	 * @param locator
+	 */
 	public static void clearText(By locator) {
 		WebElement element = waitVisible(locator);
 		element.clear();
 	}
 
+	/**
+	 * クリック
+	 * @param locator
+	 */
 	public static void clickElement(By locator) {
 		WebElement button = waitClickable(locator);
 		scrollTo("300");
 		button.click();
 	}
 
+	/**
+	 * 表示確認
+	 * @param locator
+	 */
 	public static void assertVisible(By locator) {
 		assertTrue(waitVisible(locator).isDisplayed());
 	}
 
+	/**
+	 * 表示待機
+	 * @param locator
+	 * @return
+	 */
 	public static WebElement waitVisible(By locator) {
 		WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(5));
 		return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
 	}
 
+	/**
+	* クリック待機
+	* @param locator
+	* @return
+	*/
 	public static WebElement waitClickable(By locator) {
 		WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(5));
 		return wait.until(ExpectedConditions.elementToBeClickable(locator));
 	}
+
+	/**
+	* 勤怠の出退勤時間をまとめてセット
+	* @param row 行番号（0始まり）
+	* @param startH 出勤（時）
+	* @param startM 出勤（分）
+	* @param endH 退勤（時）
+	* @param endM 退勤（分）
+	*/
+	public static void setWorkTime(int row, String startH, String startM, String endH, String endM) {
+		selectDropdown(By.id("startHour" + row), startH);
+		selectDropdown(By.id("startMinute" + row), startM);
+		selectDropdown(By.id("endHour" + row), endH);
+		selectDropdown(By.id("endMinute" + row), endM);
+	}
+
+	/**
+	 * アラートが出たらOKを押す（出なければ無視して続行）
+	 */
+	public static void acceptAlertIfPresent() {
+		try {
+			WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(2));
+			wait.until(ExpectedConditions.alertIsPresent()).accept();
+		} catch (Exception e) {
+			// アラートなし → 何もしない
+		}
+	}
+
+	/**
+	 * 入力ボックスに文字入力（クリア付き）
+	 */
+	public static void inputText(By locator, String text) {
+		WebElement element = waitVisible(locator);
+		element.clear();
+		element.sendKeys(text);
+	}
+
+	/**
+	 * ドロップダウン選択（既存でもOKだけど安全性UP版）
+	 */
+	public static void selectDropdown(By locator, String value) {
+		WebElement dropdown = waitClickable(locator);
+		dropdown.click();
+		WebElement option = dropdown.findElement(By.xpath(".//option[@value='" + value + "']"));
+		option.click();
+	}
+
 }
